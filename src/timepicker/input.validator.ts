@@ -1,54 +1,46 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import {
   isHourInputValid,
-  isInputLimitValid,
+  isInRange,
   isMinuteInputValid,
   isSecondInputValid
 } from './timepicker.utils';
 
 
-export function getHoursValidator(): ValidatorFn {
-  return ({ value }: AbstractControl): ValidationErrors | null => {
-    if (!isHourInputValid(value)) {
-      return { hours : true };
-    }
+export function hoursValidator({ value }: AbstractControl): ValidationErrors | null {
+  if (!isHourInputValid(value.timeOptionValue)) {
+    return { hours : true };
+  }
 
-    return null;
-  };
+  return null;
 }
 
-export function getMinutesValidator(): ValidatorFn {
-  return ({ value }: AbstractControl): ValidationErrors | null => {
-    if (!isMinuteInputValid(value)) {
-      return { minutes : true };
-    }
+export function minutesValidator({ value }: AbstractControl): ValidationErrors | null {
+  if (!isMinuteInputValid(value.timeOptionValue)) {
+    return { minutes : true };
+  }
 
-    return null;
-  };
+  return null;
 }
 
-export function getSecondsValidator(): ValidatorFn {
-  return ({ value }: AbstractControl): ValidationErrors | null => {
-    if (!isSecondInputValid(value)) {
-      return { seconds : true };
-    }
+export function secondsValidator({ value }: AbstractControl): ValidationErrors | null {
+  if (!isSecondInputValid(value.timeOptionValue)) {
+    return { seconds : true };
+  }
 
-    return null;
-  };
+  return null;
 }
 
-export function getLimitsValidator(min: Date, max: Date): ValidatorFn {
-  return ({ value }: AbstractControl): ValidationErrors | null => {
+export function limitsValidator({ value }: AbstractControl): ValidationErrors | null {
+  if (!value.range) {
 
-    if (isInputLimitValid({
-      hour: value.hours,
-      minute: value.minutes,
-      seconds: value.seconds
-    }, max, min)) {
+    return null;
+  }
 
-      return null;
-    }
+  if (isInRange(value.timeOptionValue, value.range.max, value.range.min)) {
 
-    return { inputLimit: true };
-  };
+    return null;
+  }
+
+  return { inputLimit: true };
 }
